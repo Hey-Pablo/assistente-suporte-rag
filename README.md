@@ -71,3 +71,20 @@ Próximos passos: criar a base fictícia e avaliar recuperação e respostas ant
 ## Autor
 
 Pablo Dilio · [Portfólio](https://hey-pablo.github.io/pablo-dilio-portfolio/) · [LinkedIn](https://www.linkedin.com/in/pablo-dilio-4063991b2)
+
+## Avaliação formal
+
+O avaliador lê `avaliacao/perguntas.csv` e os artigos em `base/`. Para cada pergunta com artigo esperado, mede se esse artigo aparece entre os cinco trechos mais similares e pede a um modelo juiz que compare a resposta com o gabarito. Para perguntas sem artigo esperado, mede a proporção de recusas do sistema (respostas sem fontes). Cada medida informa acertos e total; o julgamento automático pode errar e deve ser revisado por uma pessoa.
+
+Configure as variáveis de ambiente da seção **Configurar sua chave**. `JUDGE_MODEL` é opcional e usa `MODEL` por padrão. O provedor deve oferecer embeddings e chat compatíveis com OpenAI; use somente modelos gratuitos. O FreeLLMAPI precisa estar configurado e acessível. A avaliação envia os dados fictícios ao provedor e faz uma chamada de embedding por trecho e pergunta, além das chamadas de chat e do juiz. Verifique os limites do provedor antes de executar.
+
+Com Node.js 22.18 ou superior, exporte as variáveis do `.env` no ambiente e execute:
+
+```sh
+node avaliacao/avaliar.ts antes
+node avaliacao/avaliar.ts depois
+```
+
+A configuração inicial usa trechos de 375 palavras, sobreposição de 50 e cinco fontes; a candidata usa 200 palavras, sobreposição de 40 e três fontes. Ambas medem recuperação entre os cinco primeiros, usam o limiar 0,75 e o prompt atual. O relatório JSON registra data, modelos, configuração, métricas e resultados individuais em `avaliacao/relatorios/`. Erros interrompem a execução, sem preencher resultados ausentes. Cada execução completa cria um arquivo novo. Revise o relatório antes de compartilhá-lo e não inclua credenciais.
+
+Ainda não há métricas reais de antes e depois: nenhum provedor estava configurado no ambiente de desenvolvimento. A configuração candidata é uma hipótese para comparação, não uma melhoria comprovada nem uma alteração aplicada ao serviço. No PC, configure o gateway gratuito, execute os dois comandos e revise as respostas, recusas e julgamentos antes de decidir qualquer ajuste no serviço. A avaliação em memória usa a mesma divisão, similaridade cosseno, limiar e função de resposta, mas não substitui o teste de integração com Supabase e pgvector.
