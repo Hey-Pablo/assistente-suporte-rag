@@ -2,7 +2,7 @@
 
 > **Demonstração:** em breve
 
-> **Status: em desenvolvimento.** O backend inicial está em construção; a interface, os artigos fictícios e a avaliação formal ainda não estão disponíveis.
+> **Status: em desenvolvimento.** O backend inicial está em construção; os artigos fictícios e a avaliação formal ainda estão em desenvolvimento.
 
 ## Problema e solução
 
@@ -10,6 +10,7 @@ O suporte precisa localizar procedimentos sem inventar respostas. O backend divi
 
 ## Componentes
 
+- `web/`: login, chat, fontes, avaliações e painel de lacunas.
 - `supabase/migrations/`: tabelas, pgvector, busca, RLS, substituição transacional e limite diário.
 - `supabase/functions/ingerir/`: ingestão autenticada, disponível somente a administradores.
 - `supabase/functions/perguntar/`: pergunta autenticada, busca, geração e registro de mensagens.
@@ -31,6 +32,18 @@ npm ci --ignore-scripts
 npm test
 ```
 
+Para iniciar a interface, copie `web/.env.example` para `web/.env` e configure a URL e a chave **pública** (anon/publishable) do Supabase local. Não coloque a chave do provedor de IA nem a service role em variáveis `VITE_`. A sessão fica somente na memória da página; atualizar exige novo login. Configure `WEB_ORIGIN=http://localhost:5173` no ambiente da Edge Function, com a origem exata da interface. Em produção use a origem HTTPS autorizada.
+
+```sh
+cd web
+npm ci --ignore-scripts
+npm test
+npm run build
+npm run dev
+```
+
+O administrador precisa estar cadastrado em `administradores` pelo operador. O painel depende da RLS, não da ocultação do botão. A fonte abre o artigo e destaca o trecho quando ele está presente literalmente; caso contrário, mostra o trecho citado junto ao artigo.
+
 No computador com Supabase CLI e Docker, inicie o Supabase local, aplique as migrações e sirva as funções com o arquivo de ambiente:
 
 ```sh
@@ -46,9 +59,9 @@ No PC, valide também a autenticação real, as políticas RLS com dois usuário
 
 ## Decisões e limitações
 
-A divisão aproxima 500 tokens por 375 palavras, com sobreposição de 50 palavras; não usa tokenizador específico. A busca é exata e usa distância de cosseno, sem índice vetorial nesta fase. O limiar inicial ainda precisa de avaliação formal. Artigos e trechos são compartilhados entre usuários autenticados; conversas e mensagens são isoladas por usuário, enquanto administradores também podem ler lacunas. O prompt orienta o modelo a ignorar instruções nos trechos, mas isso não é uma barreira de segurança nem garante ausência de alucinação. Não envie informações sensíveis ao provedor. O projeto ainda não possui chat, painel, 30 artigos fictícios, avaliação formal ou deploy.
+A divisão aproxima 500 tokens por 375 palavras, com sobreposição de 50 palavras; não usa tokenizador específico. A busca é exata e usa distância de cosseno, sem índice vetorial nesta fase. O limiar inicial ainda precisa de avaliação formal. Artigos e trechos são compartilhados entre usuários autenticados; conversas e mensagens são isoladas por usuário, enquanto administradores também podem ler lacunas. O prompt orienta o modelo a ignorar instruções nos trechos, mas isso não é uma barreira de segurança nem garante ausência de alucinação. Não envie informações sensíveis ao provedor. O projeto ainda não possui 30 artigos fictícios, avaliação formal ou deploy.
 
-Próximos passos: criar base fictícia, interface com fontes e feedback, painel de lacunas e avaliar recuperação e respostas antes de ajustar o limiar. A IA foi usada como apoio à implementação; o código e os testes devem ser revisados pelo autor.
+Próximos passos: criar a base fictícia e avaliar recuperação e respostas antes de ajustar o limiar. A IA foi usada como apoio à implementação; o código e os testes devem ser revisados pelo autor.
 
 ## Autor
 
