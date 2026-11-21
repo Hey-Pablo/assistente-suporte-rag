@@ -57,6 +57,11 @@ Crie um usuário pelo Supabase Auth. Para habilitar ingestão, um operador do ba
 
 No PC, valide também a autenticação real, as políticas RLS com dois usuários e um administrador, ingestão, modelo com vetor de 1536 dimensões, citações, recusa, lacunas e limite de 20 perguntas por usuário por dia UTC. Os testes PGlite simulam `auth.uid()` e não substituem essa integração real. O limite conta tentativas, inclusive falhas posteriores à reserva. O contador é atualizado atomicamente no banco.
 
+## Base de conhecimento
+
+`base/` reúne 30 artigos fictícios de suporte a ERP (impressora fiscal, NF-e, acesso remoto, boleto, rede e atendimento), em Markdown com frontmatter (`id`, `titulo`, `categoria`). `avaliacao/perguntas.csv` tem 40 perguntas com resposta e artigo esperados; 8 são propositalmente alheias à base e devem ser recusadas. `tests/validar-base.test.cjs` confere frontmatter, ids únicos, existência dos artigos citados e a proporção de perguntas fora da base. Todo o conteúdo é fictício.
+
+
 ## Decisões e limitações
 
 A divisão aproxima 500 tokens por 375 palavras, com sobreposição de 50 palavras; não usa tokenizador específico. A busca é exata e usa distância de cosseno, sem índice vetorial nesta fase. O limiar inicial ainda precisa de avaliação formal. Artigos e trechos são compartilhados entre usuários autenticados; conversas e mensagens são isoladas por usuário, enquanto administradores também podem ler lacunas. O prompt orienta o modelo a ignorar instruções nos trechos, mas isso não é uma barreira de segurança nem garante ausência de alucinação. Não envie informações sensíveis ao provedor. O projeto ainda não possui 30 artigos fictícios, avaliação formal ou deploy.

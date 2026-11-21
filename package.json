@@ -1,12 +1,12 @@
 {
   "name": "assistente-suporte-rag",
   "version": "1.0.0",
-  "description": "> **Status: em desenvolvimento.** O c\u00f3digo entra aos poucos; abaixo est\u00e1 o planejamento do projeto.",
+  "description": "> **Status: em desenvolvimento.** O código entra aos poucos; abaixo está o planejamento do projeto.",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs tests/*.test.cjs"
   },
   "repository": {
     "type": "git",
