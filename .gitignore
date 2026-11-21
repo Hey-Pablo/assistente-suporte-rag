@@ -10,3 +10,7 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+node_modules/
+.env
+.env.*
+!.env.example
