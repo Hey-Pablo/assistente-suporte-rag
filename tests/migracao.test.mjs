@@ -9,6 +9,7 @@ test('migração isola conversas por usuário e busca trechos semelhantes', asyn
   try {
   await db.exec(`create role authenticated; create schema auth; create table auth.users(id uuid primary key); create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$; grant usage on schema auth to authenticated; grant execute on function auth.uid() to authenticated;`);
   await db.exec(await readFile('supabase/migrations/20261121000000_rag.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/20261121000001_ingestao.sql', 'utf8'));
   const a = '00000000-0000-0000-0000-000000000001', b = '00000000-0000-0000-0000-000000000002';
   await db.query('insert into auth.users values ($1), ($2)', [a,b]);
   await db.query("insert into public.conversas(id, usuario_id) values ('10000000-0000-0000-0000-000000000001',$1), ('10000000-0000-0000-0000-000000000002',$2)", [a,b]);
@@ -22,5 +23,12 @@ test('migração isola conversas por usuário e busca trechos semelhantes', asyn
   assert.equal(busca.rows[0].titulo, 'Impressora');
   assert.equal(busca.rows[0].similaridade, 1);
   await assert.rejects(db.query('insert into public.conversas(usuario_id) values ($1)', [b]));
+  await assert.rejects(db.query('select public.substituir_trechos($1, $2::jsonb)', [artigo, JSON.stringify([{ordem: 0, conteudo: 'forjado', embedding: JSON.parse(vetor)}])]));
+  assert.equal((await db.query('select conteudo from public.trechos')).rows[0].conteudo, 'Reinicie a fila');
+  await db.exec('reset role');
+  await db.query('insert into public.administradores values ($1)', [a]);
+  await db.exec('set role authenticated');
+  await assert.rejects(db.query('select public.substituir_trechos($1, $2::jsonb)', [artigo, JSON.stringify([{ordem: 0, conteudo: 'inválido', embedding: [1]}])]));
+  assert.equal((await db.query('select conteudo from public.trechos')).rows[0].conteudo, 'Reinicie a fila');
   } finally { await db.close(); }
 });
