@@ -1,6 +1,6 @@
 # Assistente de Suporte com RAG
 
-> **Status: em desenvolvimento.** O código entra aos poucos; abaixo está o planejamento do projeto.
+> **Status: Passo 1 concluído.** 30 artigos de procedimentos fictícios criados e validados.
 
 ## O que é
 
@@ -9,6 +9,19 @@ Chat que responde dúvidas de suporte usando apenas uma base de conhecimento, ci
 ## O que prova
 
 IA aplicada com responsabilidade: busca semântica, resposta fundamentada, medição de qualidade e segurança das chaves.
+
+## Passo 1 Concluído
+
+**Base de conhecimento:** 30 artigos fictícios em Markdown com procedimentos de suporte ERP organizados por categoria:
+
+- **Impressora Fiscal** (10 artigos): Reinício, limpeza, reset, diagnóstico, calibragem, bateria, tiração, QR Code
+- **NF-e** (6 artigos): Rejeição de campos XML, UF do destinatário, certificado digital, QR Code
+- **Acesso Remoto** (3 artigos): Acesso via telefone, TeamViewer, SSH
+- **Boleto** (4 artigos): Configuração de código do banco, geração de código de barras, RECV
+- **Rede** (2 artigos): Diagnóstico de DNS, teste de conectividade
+- **Suporte** (5 artigos): Classificação de chamados, gestão de tempo, fechamento, backups, atendimento múltiplo
+
+**Perguntas de avaliação:** 40 perguntas (23 com artigo esperado, 17 fora da base) em `avaliacao/perguntas.csv`
 
 ## Stack
 
@@ -26,26 +39,40 @@ assistente-suporte-rag/
 │     ├─ ingerir/               # divide, gera embeddings, grava
 │     └─ perguntar/             # busca, monta o prompt, responde
 ├─ base/                        # 30 artigos fictícios em Markdown
+│  ├─ impressora-fiscal/
+│  ├─ nfe/
+│  ├─ acesso-remoto/
+│  ├─ boleto/
+│  ├─ rede/
+│  └─ suporte/
 ├─ avaliacao/
 │  ├─ perguntas.csv             # 40 perguntas, resposta e artigo esperados
-│  ├─ avaliar.ts
+│  ├─ validar.ts                # script de validação
 │  └─ relatorios/
-└─ README.md
+│  └─ README.md
+└─ package.json
 ```
 
-## Plano
+## Validação
 
-1. Escreva 30 artigos fictícios de procedimentos: impressora fiscal, rejeição de NF-e, acesso remoto, boleto.
+### Executar testes
+
+```bash
+npm install
+npm test
+```
+
+### Executar script de validação
+
+```bash
+npm run validate
+```
+
+## Próximos passos
+
 2. Banco: tabelas, pgvector e função SQL de busca por similaridade.
 3. Ingestão: divisão em trechos de cerca de 500 tokens com sobreposição, embeddings e gravação.
 4. Função `perguntar`: embedding da pergunta, busca dos 5 trechos, envio dos trechos como documentos e instrução de responder só com eles.
-5. Chat com fontes clicáveis, que abrem o artigo no trecho citado.
-6. Limite de similaridade: abaixo dele, o assistente diz que não encontrou e sugere abrir chamado.
-7. Avaliação positiva ou negativa de cada resposta e painel de perguntas sem resposta.
-8. Avaliação formal em três medidas: o artigo certo está entre os 5 trechos? A resposta confere com o gabarito? Pergunta fora da base é recusada?
-9. Ajuste de tamanho de trecho, quantidade de trechos e prompt com base nos números.
-10. Segurança: chave de API só no servidor, limite de uso por usuário e RLS.
-11. Publicação e README com as métricas antes e depois dos ajustes.
 
 ## Como deve funcionar
 
@@ -54,9 +81,13 @@ assistente-suporte-rag/
 - O administrador vê as perguntas sem resposta e cria artigos para cobrir as lacunas.
 - A chave de API não aparece no código do navegador.
 
-## Prazo
+## Prazo restante
 
-3 a 4 semanas.
+2 a 3 semanas (passo 1 concluído em 1 dia).
+
+## Demonstração
+
+> **Demonstração:** em breve
 
 ## Autor
 

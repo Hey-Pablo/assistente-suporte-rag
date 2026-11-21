@@ -1,0 +1,41 @@
+pergunta,resposta_esperada,artigo_esperado
+"Como reiniciar uma impressora fiscal que esta travada?","Passos: 1) Desligar fisicamente, 2) Aguardar 30 segundos, 3) Ligar novamente, 4) Verificar status no visor, 5) Testar com documento simples",artigo-001
+"Qual o procedimento para limpar a lente de impressao da impressora fiscal?","Ferramentas: alca de limpeza, alcool isopropilico 70%, toalha de microfibra. Passos: desligar, abrir tampa, limpar com alcool, usar alca de limpeza, testar impressao",artigo-002
+"Como fazer o reset de erros padrao na impressora fiscal?","Aperte e segure botoes FUNCAO e IMPRIME, desligue e ligue mantendo botoes por ~10s ate mostrar RESET, solte e aguarde inicializacao",artigo-003
+"Como verificar o estado de tirada de antecipacao da impressora fiscal?","Verificar visor, abrir bandeja de saida, inspecionar roletes, limpar sensor, testar manualmente papel, chamar suporte se persistir",artigo-004
+"Quais sao os modos de impressao termica e quando usalos?","Velocidade massima (balcao), Qualidade padrao (uso diario), Alta qualidade (legibilidade), Economico (uso noturno). Configurar em menu Configuracoes > Modo impressao",artigo-005
+"Como diagnosticar erro de comunicacao com o PA na impressora fiscal?","Verificar rede, testar modem, confirmar configuracoes de IP, verificar DNS, testar ping para PA, atualizar firmware se necessario",artigo-006
+"Como atualizar o firmware da impressora fiscal?","1) Verificar versao atual, 2) Baixar firmware oficial, 3) Preparar pendrive FAT32, 4) Desligar, inserir pendrive, ligar mantendo botao, aguardar, testar impressao",artigo-007
+"Como calibrar o caixa de leitura de codigos de barras?","Acessar menu de servico, usar cartao de teste fornecido, executar calibracao automatica, limpar leitor com pano, testar com codigos reais",artigo-008
+"Como testar a bateria de backup da impressora fiscal?","Desligar, aguardar 5 minutos, verificar se tela permanece ligada, religar e confirmar hora/dados preservados, substituir se falhar",artigo-009
+"Como diagnosticar e resolver erro de tirada de papel?","Abrir a impressora, remover papel preso, limpar sensor de papel, verificar roletes, testar mecanismo manualmente, limpar com alcool se necessario",artigo-010
+"Como diagnosticar rejeicao por campo XML invalido na NF-e?","Acessar retorno da rejeicao, identificar codigo especifico, localizar tag no XML, verificar formatação (CNPJ, data, valor)",artigo-011
+"Como corrigir rejeicao por UF do destinatario diferente do remetente?","Verificar regras da SEFAZ, atualizar cadastro do destinatario com IE valida, usar CFOP correto para interestadual, solicitar autorizacao previa se necessario",artigo-012
+"Como configurar e validar o certificado digital para emissao de NF-e?","Instalar certificado ICP EA12/EA27, instalar no Windows, associar ao software Siscal, testar assinatura, verificar validade",artigo-013
+"Como resolver erros de impressao do Danfe?","Verificar XML da NF-e, baixar novo DANFE, testar em outra impressora, verificar driver atualizado, configurar papel A4 portrait, qualidade 300 DPI",artigo-019
+"Como configurar corretamente o numero do banco no boleto?","Usar codigo de 3 digitos sem caracteres (ex: 001 para BB), usar apenas numeros, completar com zeros a esquerda se necessario",artigo-020
+"Como gerar corretamente o codigo de barras do boleto?","Construir string de 44 caracteres numericos, calcular DV usando modulo 11, posicionar DV nas posicoes 1-2, testar leitura com scanner",artigo-021
+"Como validar e configurar o RECV do cedente?","Obter RECV do banco (14 digitos), validar formato correto, configurar no sistema, testar com boleto de teste",artigo-022
+"Como diagnosticar e resolver erros de DNS?","Testar nslookup, ping direto IP, mudar para DNS publico (8.8.8.8 ou 1.1.1.1), limpar cache DNS, reiniciar roteador",artigo-023
+"Como testar a conectividade de internet passo a passo?","Verificar IP, ping gateway, ping DNS publico, nslookup dominio, traceroute, speedtest, verificar firewall",artigo-024
+"Como classificar um chamado de suporte principalmente?","Identificar categoria (hardware/software/rede), definir prioridade (critica/alta/normal/baixa), atribuir equipe especializada, vincular SLA",artigo-025
+"Como atender multiplos usuarios simultaneamente?","Usar tecnica do split ou ping-pong, comunicar grupo, documentar solucoes, dividir por prioridade, fazer follow-up individual",artigo-026
+"Como fechar corretamente um chamado de suporte?","Verificar solucao testada, comunicar ao usuario, registrar comentario detalhado, marcar como resolvido, aguardar 20min de follow-up",artigo-027
+"Como realizar e verificar backups do sistema?","Configurar backup diario completo, verificar tamanho/log, testar restauracao parcial semanal, validar checksum, manter RTO < 4h",artigo-028
+"Qual a diferenca entre impressao termica e a jato?","Termica usa fita/cinta, a jato usa tinta. Verificar fita para termica, alinhar cabeçote para a jato, limpar sensor de papel",
+"Como verificar se a impressora esta em modo de economia?","Pressionar botões específicos do fabricante, verificar visor por 'Econ' ou 'Sleep', conectar carregador se aplicável",
+"Como limpar os bicos da impressora sem danificá-la?","Usar fita para limpeza, passar por cima do cabeçote sem tocar, usar alcool isopropilico se muito entupido, nunca forçar",
+"Como resolver quando o leitor de codigos de barras nao funciona?","Verificar driver, testar com outro software, limpar lente, calibrar caixa de leitura, verificar permissoes",
+"Como verificar se o PC esta online na rede?","Pingar IP do computador, verificar MAC address, testar porta RDP/SSH, usar nmap para varredura",
+"Como resolver quando a internet cai intermitentemente?","Verificar roteador, testar com outro dispositivo, verificar DHCP, reiniciar modem, checar planos de internet",
+"Como identificar se o problema e do navegador ou do sistema?","Testar outro navegador, criar perfil novo, verificar extensoes, executar em modo de navegacao anônima",
+"Como recuperar senha de administrador do sistema?","Usar modo seguro, chamar suporte comprovado, verificar se ha conta de recuperacao, usar disco de recuperacao",
+"Como verificar se ha virus no computador?","Executar antivirus atualizado, verificar processos suspeitos, checar inicialização, usar ferramentas de remoção",
+"Como otimizar a performance do sistema?","Desativar programas de inicialização, verificar espaco em disco, limpar arquivos temporarios, revisar servicos",
+"Qual a diferenca entre backup completo e diferencial?","Completo: tudo. Diferencial: somente arquivos modificados desde o ultimo completo",
+"Como verificar se a impressora esta reconhecendo o papel?","Abrir a aplicacao de impressao, verificar porta de alimentacao, observar mensagens no visor, testar com folha nova",
+"Como resolver quando a impressora nao reconhece formato de cupom?","Verificar configuracao de papel no sistema, alterar tamanho na aplicacao, atualizar driver da impressora",
+"Como diagnosticar lentos na impressao de relatorios fiscais?","Verificar memoria disponivel, fechar outras aplicacoes, verificar pasta de impressao temporaria, reiniciar spooler",
+"Como verificar se o sistema operacional esta corretamente ativado?","Pressionar Win+R, digitar 'slmgr /dlv', verificar mensagem de ativacao",
+"Como resolver quando a impressora fiscal nao imprime selo fiscal?","Verificar bateria do selo, reinscremento de certificado, verificar configuracao do selo no sistema",
+"Como realizar limpeza de arquivos temporarios do sistema?","Abrir limpeza de disco, selecionar unidade, marcar arquivos temporarios, executar limpeza",artigo-029

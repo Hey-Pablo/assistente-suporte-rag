@@ -1,0 +1,28 @@
+{
+  "name": "assistente-suporte-rag",
+  "version": "1.0.0",
+  "description": "> **Status: em desenvolvimento.** O código entra aos poucos; abaixo está o planejamento do projeto.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test tests/**/*.test.js",
+    "validate": "npx ts-node avaliacao/validar.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hey-Pablo/assistente-suporte-rag.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Hey-Pablo/assistente-suporte-rag/issues"
+  },
+  "homepage": "https://github.com/Hey-Pablo/assistente-suporte-rag#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "csv-parser": "^3.2.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
+  }
+}
