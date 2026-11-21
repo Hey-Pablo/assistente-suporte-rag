@@ -15,3 +15,7 @@ export function provedorCompativel({ baseUrl, apiKey, embeddingModel, chatModel,
     chat: { async responder(mensagens) { return (await requisitar('chat/completions', { model: chatModel, messages: mensagens, max_tokens: 700 })).choices?.[0]?.message?.content; } },
   };
 }
+
+export function provedorFake({ vetor, resposta }) {
+  return { embeddings: { gerar: async () => [...vetor] }, chat: { responder: async () => resposta } };
+}

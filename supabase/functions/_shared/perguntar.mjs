@@ -15,5 +15,10 @@ export async function perguntar(pergunta, { embeddings, repositorio, chat, limia
     { role: 'user', content: `Trechos:\n${documentos}\n\nPergunta: ${pergunta}` },
   ]);
   if (typeof resposta !== 'string' || !resposta.trim()) throw new Error('Resposta inválida');
+  const citacoes = [...resposta.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
+  if (!citacoes.length || citacoes.some(n => n < 1 || n > fontes.length)) {
+    await repositorio.registrarLacuna(pergunta);
+    return { resposta: 'Não encontrei uma resposta fundamentada na base. Considere abrir um chamado.', fontes: [] };
+  }
   return { resposta, fontes };
 }

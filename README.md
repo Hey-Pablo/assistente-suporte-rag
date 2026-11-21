@@ -1,62 +1,54 @@
 # Assistente de Suporte com RAG
 
-> **Status: em desenvolvimento.** O código entra aos poucos; abaixo está o planejamento do projeto.
+> **Demonstração:** em breve
 
-## O que é
+> **Status: em desenvolvimento.** O backend inicial está em construção; a interface, os artigos fictícios e a avaliação formal ainda não estão disponíveis.
 
-Chat que responde dúvidas de suporte usando apenas uma base de conhecimento, cita os artigos de origem e admite quando não sabe. As perguntas sem resposta viram lista de lacunas para o administrador.
+## Problema e solução
 
-## O que prova
+O suporte precisa localizar procedimentos sem inventar respostas. O backend divide artigos em trechos, gera embeddings e busca até cinco trechos por similaridade. A resposta recebe os trechos e deve citá-los; abaixo do limiar, ou quando o modelo não apresenta citações válidas, o sistema informa que não encontrou e registra uma lacuna. A revisão humana continua necessária: citações válidas não provam que o texto gerado está correto.
 
-IA aplicada com responsabilidade: busca semântica, resposta fundamentada, medição de qualidade e segurança das chaves.
+## Componentes
 
-## Stack
+- `supabase/migrations/`: tabelas, pgvector, busca, RLS, substituição transacional e limite diário.
+- `supabase/functions/ingerir/`: ingestão autenticada, disponível somente a administradores.
+- `supabase/functions/perguntar/`: pergunta autenticada, busca, geração e registro de mensagens.
+- `supabase/functions/_shared/`: lógica independente do runtime e adaptadores de provedor, inclusive falso para testes.
+- `tests/`: testes Node e SQL com PGlite e pgvector, sem banco externo.
 
-React e TypeScript. Supabase com PostgreSQL, extensão pgvector, Auth e Edge Functions. Um modelo de embeddings para a busca. Claude (`claude-opus-5-5` como padrão) para a resposta, com o recurso de citações da API: os trechos entram como blocos de documento e a resposta volta apontando o trecho usado.
+## Configurar sua chave
 
-## Estrutura
+Cada instalação usa suas próprias credenciais. Configure o [FreeLLMAPI](https://github.com/ou-pingping/FreeLLMAPI) ou outro provedor compatível com a API OpenAI. O FreeLLMAPI é um gateway que precisa estar instalado e configurado; seus provedores e modelos disponíveis variam. Crie uma chave no painel do gateway e configure um modelo de embeddings de **1536 dimensões** e um modelo de chat. Confirme que o plano escolhido é gratuito antes de utilizá-lo.
 
-```
-assistente-suporte-rag/
-├─ web/                         # chat, fontes, painel de lacunas
-├─ supabase/
-│  ├─ migrations/               # artigos, trechos (vector), conversas,
-│  │                            # mensagens, função de busca, RLS
-│  └─ functions/
-│     ├─ ingerir/               # divide, gera embeddings, grava
-│     └─ perguntar/             # busca, monta o prompt, responde
-├─ base/                        # 30 artigos fictícios em Markdown
-├─ avaliacao/
-│  ├─ perguntas.csv             # 40 perguntas, resposta e artigo esperados
-│  ├─ avaliar.ts
-│  └─ relatorios/
-└─ README.md
+Copie `.env.example` para `.env` e preencha `BASE_URL`, `API_KEY`, `EMBEDDING_MODEL` e `MODEL`. O exemplo usa `http://localhost:3001/v1` para desenvolvimento local; em uma Edge Function remota, `localhost` aponta para o ambiente da função, não para o computador pessoal. Use um endpoint HTTPS acessível pela função. A chave é usada somente no servidor e não deve ser enviada ao navegador nem ao GitHub. Defina `LIMIAR_SIMILARIDADE` entre 0 e 1; o padrão é 0,75. Trocar de modelo de embedding exige reingerir todos os artigos.
+
+## Executar e testar
+
+Requisitos: Node.js, npm e Supabase CLI com Docker para o ambiente Supabase local. Para executar apenas os testes automatizados, Docker não é necessário:
+
+```sh
+npm ci --ignore-scripts
+npm test
 ```
 
-## Plano
+No computador com Supabase CLI e Docker, inicie o Supabase local, aplique as migrações e sirva as funções com o arquivo de ambiente:
 
-1. Escreva 30 artigos fictícios de procedimentos: impressora fiscal, rejeição de NF-e, acesso remoto, boleto.
-2. Banco: tabelas, pgvector e função SQL de busca por similaridade.
-3. Ingestão: divisão em trechos de cerca de 500 tokens com sobreposição, embeddings e gravação.
-4. Função `perguntar`: embedding da pergunta, busca dos 5 trechos, envio dos trechos como documentos e instrução de responder só com eles.
-5. Chat com fontes clicáveis, que abrem o artigo no trecho citado.
-6. Limite de similaridade: abaixo dele, o assistente diz que não encontrou e sugere abrir chamado.
-7. Avaliação positiva ou negativa de cada resposta e painel de perguntas sem resposta.
-8. Avaliação formal em três medidas: o artigo certo está entre os 5 trechos? A resposta confere com o gabarito? Pergunta fora da base é recusada?
-9. Ajuste de tamanho de trecho, quantidade de trechos e prompt com base nos números.
-10. Segurança: chave de API só no servidor, limite de uso por usuário e RLS.
-11. Publicação e README com as métricas antes e depois dos ajustes.
+```sh
+supabase init
+supabase start
+supabase db reset
+supabase functions serve --env-file .env
+```
 
-## Como deve funcionar
+Crie um usuário pelo Supabase Auth. Para habilitar ingestão, um operador do banco deve inserir o UUID desse usuário em `public.administradores`; usuários comuns não podem se promover. Cadastre um artigo fictício em `artigos` como administrador e invoque `ingerir` com seu JWT e `{ "artigo_id": "UUID" }`. Crie uma conversa própria e invoque `perguntar` com seu JWT e `{ "conversa_id": "UUID", "pergunta": "Como reiniciar a fila?" }`. Use o endereço e a chave pública do projeto Supabase para as chamadas; as funções recebem `SUPABASE_URL` e `SUPABASE_ANON_KEY` do ambiente Supabase. Não use dados reais ou segredos em exemplos.
 
-- "Como reinicio a fila de impressão?" recebe resposta em passos, com a citação do artigo.
-- "Qual o salário do gerente?" recebe "não encontrei na base".
-- O administrador vê as perguntas sem resposta e cria artigos para cobrir as lacunas.
-- A chave de API não aparece no código do navegador.
+No PC, valide também a autenticação real, as políticas RLS com dois usuários e um administrador, ingestão, modelo com vetor de 1536 dimensões, citações, recusa, lacunas e limite de 20 perguntas por usuário por dia UTC. Os testes PGlite simulam `auth.uid()` e não substituem essa integração real. O limite conta tentativas, inclusive falhas posteriores à reserva. O contador é atualizado atomicamente no banco.
 
-## Prazo
+## Decisões e limitações
 
-3 a 4 semanas.
+A divisão aproxima 500 tokens por 375 palavras, com sobreposição de 50 palavras; não usa tokenizador específico. A busca é exata e usa distância de cosseno, sem índice vetorial nesta fase. O limiar inicial ainda precisa de avaliação formal. Artigos e trechos são compartilhados entre usuários autenticados; conversas e mensagens são isoladas por usuário, enquanto administradores também podem ler lacunas. O prompt orienta o modelo a ignorar instruções nos trechos, mas isso não é uma barreira de segurança nem garante ausência de alucinação. Não envie informações sensíveis ao provedor. O projeto ainda não possui chat, painel, 30 artigos fictícios, avaliação formal ou deploy.
+
+Próximos passos: criar base fictícia, interface com fontes e feedback, painel de lacunas e avaliar recuperação e respostas antes de ajustar o limiar. A IA foi usada como apoio à implementação; o código e os testes devem ser revisados pelo autor.
 
 ## Autor
 
