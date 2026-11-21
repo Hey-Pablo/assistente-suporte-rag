@@ -95,8 +95,8 @@ perguntas = parseCSV(csvContent);
 
 describe('Validação da Base de Conhecimento', () => {
   describe('Artigos', () => {
-    it('deve ter exatamente 30 artigos', () => {
-      assert.strictEqual(artigos.length, 30, `Esperado 30 artigos, encontrado ${artigos.length}`);
+    it('deve ter exatamente 32 artigos', () => {
+      assert.strictEqual(artigos.length, 32, `Esperado 32 artigos, encontrado ${artigos.length}`);
     });
 
     it('deve ter todos os artigos com ID unico', () => {

@@ -1,6 +1,6 @@
 # Assistente de Suporte com RAG
 
-> **Status: Passo 1 concluído.** 30 artigos de procedimentos fictícios criados e validados.
+> **Status: Passo 1 em revisão.** Criação da base de conhecimento em andamento.
 
 ## O que é
 
@@ -10,18 +10,45 @@ Chat que responde dúvidas de suporte usando apenas uma base de conhecimento, ci
 
 IA aplicada com responsabilidade: busca semântica, resposta fundamentada, medição de qualidade e segurança das chaves.
 
-## Passo 1 Concluído
+## Passo 1 em Andamento
 
-**Base de conhecimento:** 30 artigos fictícios em Markdown com procedimentos de suporte ERP organizados por categoria:
+**Base de conhecimento:** 32 artigos fictícios em Markdown com procedimentos de suporte ERP organizados por categoria:
 
-- **Impressora Fiscal** (10 artigos): Reinício, limpeza, reset, diagnóstico, calibragem, bateria, tiração, QR Code
-- **NF-e** (6 artigos): Rejeição de campos XML, UF do destinatário, certificado digital, QR Code
-- **Acesso Remoto** (3 artigos): Acesso via telefone, TeamViewer, SSH
-- **Boleto** (4 artigos): Configuração de código do banco, geração de código de barras, RECV
-- **Rede** (2 artigos): Diagnóstico de DNS, teste de conectividade
-- **Suporte** (5 artigos): Classificação de chamados, gestão de tempo, fechamento, backups, atendimento múltiplo
+### Estrutura dos Artigos
 
-**Perguntas de avaliação:** 40 perguntas (23 com artigo esperado, 17 fora da base) em `avaliacao/perguntas.csv`
+| Categoria | Quantidade | Exemplos |
+|-----------|------------|----------|
+| Impressora Fiscal | 12 artigos | Reinício, limpeza, reset, diagnóstico, calibragem, bateria, tiração, fila de impressão, relatórios fiscais, selo fiscal |
+| NF-e | 4 artigos | Rejeição de campos XML, UF do destinatário, certificado digital, QR Code |
+| Acesso Remoto | 4 artigos | Acesso via telefone, TeamViewer, SSH, VPN corporativa |
+| Boleto | 4 artigos | Configuração de código do banco, validação linha digitável, baixa CNAB, negociação de vencido |
+| Rede | 2 artigos | Diagnóstico de DNS, teste de conectividade |
+| Suporte | 6 artigos | Classificação de chamados, gestão de tempo, fechamento, backups, atendimento múltiplo, limpeza temporários |
+
+### Formato Dos Artigos
+
+Cada artigo segue o padrão Markdown com frontmatter YAML:
+
+```yaml
+---
+id: artigo-XXX
+titulo: "Como fazer algo específico"
+categoria: "Categoria do Artigo"
+---
+```
+
+### Como Validar
+
+1. Executar `npm run validate` para verificar:
+   - Frontmatter válido (id, titulo, categoria)
+   - Todos os artigos referenciados em perguntas existem
+   - Perguntas CSV está consistente
+
+2. Executar `npm test` para testes automatizados
+
+**Perguntas de avaliação:** 40 perguntas em `avaliacao/perguntas.csv`
+- 32 perguntas com artigo_esperado referenciando a base
+- 8 perguntas fora da base (não aplicáveis)
 
 ## Stack
 
