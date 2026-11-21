@@ -10,6 +10,7 @@ test('migração isola conversas por usuário e busca trechos semelhantes', asyn
   await db.exec(`create role authenticated; create schema auth; create table auth.users(id uuid primary key); create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$; grant usage on schema auth to authenticated; grant execute on function auth.uid() to authenticated;`);
   await db.exec(await readFile('supabase/migrations/20261121000000_rag.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/20261121000001_ingestao.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/20261121000002_limite.sql', 'utf8'));
   const a = '00000000-0000-0000-0000-000000000001', b = '00000000-0000-0000-0000-000000000002';
   await db.query('insert into auth.users values ($1), ($2)', [a,b]);
   await db.query("insert into public.conversas(id, usuario_id) values ('10000000-0000-0000-0000-000000000001',$1), ('10000000-0000-0000-0000-000000000002',$2)", [a,b]);
@@ -23,6 +24,12 @@ test('migração isola conversas por usuário e busca trechos semelhantes', asyn
   assert.equal(busca.rows[0].titulo, 'Impressora');
   assert.equal(busca.rows[0].similaridade, 1);
   await assert.rejects(db.query('insert into public.conversas(usuario_id) values ($1)', [b]));
+  for (let i = 0; i < 20; i++) assert.equal((await db.query('select public.consumir_limite() as permitido')).rows[0].permitido, true);
+  assert.equal((await db.query('select public.consumir_limite() as permitido')).rows[0].permitido, false);
+  await db.query("select set_config('request.jwt.claim.sub', $1, false)", [b]);
+  assert.equal((await db.query('select public.consumir_limite() as permitido')).rows[0].permitido, true);
+  await assert.rejects(db.query('select * from public.uso_diario'));
+  await db.query("select set_config('request.jwt.claim.sub', $1, false)", [a]);
   await assert.rejects(db.query('select public.substituir_trechos($1, $2::jsonb)', [artigo, JSON.stringify([{ordem: 0, conteudo: 'forjado', embedding: JSON.parse(vetor)}])]));
   assert.equal((await db.query('select conteudo from public.trechos')).rows[0].conteudo, 'Reinicie a fila');
   await db.exec('reset role');
