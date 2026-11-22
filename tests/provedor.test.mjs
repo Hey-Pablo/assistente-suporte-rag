@@ -15,3 +15,11 @@ test('provedor envia chave apenas ao endpoint configurado', async () => {
   assert.equal(destino, 'https://exemplo.invalid/v1/embeddings');
   assert.equal(opcoes.redirect, 'error');
 });
+
+test('solicita dimensões e registra modelo informado pelo provedor', async () => {
+  let corpo; const modelos = [];
+  const p = provedorCompativel({ baseUrl: 'https://exemplo.invalid/v1', apiKey: 'falsa', embeddingModel: 'teste', dimensoes: 1536, aoReceberModelo: (tipo, modelo) => modelos.push([tipo, modelo]), fetchImpl: async (_url, opts) => { corpo = JSON.parse(opts.body); return { ok: true, json: async () => ({ model: 'modelo-real', data: [{ embedding: [1] }] }) }; } });
+  await p.embeddings.gerar('teste');
+  assert.equal(corpo.dimensions, 1536);
+  assert.deepEqual(modelos, [['embeddings', 'modelo-real']]);
+});
