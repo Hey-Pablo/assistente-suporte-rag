@@ -2,7 +2,7 @@
 
 > **Demonstração:** em breve
 
-> **Status: em desenvolvimento.** O backend inicial está em construção; os artigos fictícios e a avaliação formal ainda estão em desenvolvimento.
+> **Status: pronto para revisão.** Backend, chat, base fictícia (30 artigos) e script de avaliação estão na `main`. Falta rodar a avaliação com um provedor real e publicar as métricas (ver "Avaliação formal").
 
 ## Problema e solução
 
@@ -66,7 +66,7 @@ No PC, valide também a autenticação real, as políticas RLS com dois usuário
 
 A divisão aproxima 500 tokens por 375 palavras, com sobreposição de 50 palavras; não usa tokenizador específico. A busca é exata e usa distância de cosseno, sem índice vetorial nesta fase. O limiar inicial ainda precisa de avaliação formal. Artigos e trechos são compartilhados entre usuários autenticados; conversas e mensagens são isoladas por usuário, enquanto administradores também podem ler lacunas. O prompt orienta o modelo a ignorar instruções nos trechos, mas isso não é uma barreira de segurança nem garante ausência de alucinação. Não envie informações sensíveis ao provedor. O projeto ainda não possui 30 artigos fictícios, avaliação formal ou deploy.
 
-Próximos passos: criar a base fictícia e avaliar recuperação e respostas antes de ajustar o limiar. A IA foi usada como apoio à implementação; o código e os testes devem ser revisados pelo autor.
+Próximos passos: rodar a avaliação formal com um provedor real (embeddings e chat) e só então ajustar o limiar. A IA foi usada como apoio à implementação; o código e os testes devem ser revisados pelo autor.
 
 ## Autor
 
