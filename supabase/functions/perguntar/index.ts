@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     const { data: permitido, error: limiteError } = await db.rpc('consumir_limite');
     if (limiteError) throw limiteError;
     if (!permitido) return respond('Limite diário atingido', 429);
-    const provedor = provedorCompativel({ baseUrl: Deno.env.get('BASE_URL') ?? 'http://localhost:3001/v1', apiKey: Deno.env.get('API_KEY'), embeddingModel: Deno.env.get('EMBEDDING_MODEL'), chatModel: Deno.env.get('MODEL') });
+    const provedor = provedorCompativel({ baseUrl: Deno.env.get('BASE_URL') ?? 'http://localhost:3001/v1', apiKey: Deno.env.get('API_KEY'), embeddingModel: Deno.env.get('EMBEDDING_MODEL'), dimensoes: Number(Deno.env.get('EMBEDDING_DIMENSIONS') ?? '1536'), chatModel: Deno.env.get('MODEL') });
     const resultado = await perguntar(body.pergunta, { ...provedor, limiar: Number(Deno.env.get('LIMIAR_SIMILARIDADE') ?? '0.75'), repositorio: {
       async buscar(vetor: number[], quantidade: number) { const { data, error } = await db.rpc('buscar_trechos', { consulta: vetor, quantidade }); if (error) throw error; return data; },
       async registrarLacuna(pergunta: string) { const { error } = await db.from('lacunas').insert({ usuario_id: auth.user.id, pergunta }); if (error) throw error; },

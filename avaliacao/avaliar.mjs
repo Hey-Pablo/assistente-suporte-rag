@@ -71,8 +71,10 @@ function cosseno(a, b) {
 export async function executarAvaliacao({ tamanho, sobreposicao, topK, nome }) {
   const { BASE_URL, API_KEY, MODEL, EMBEDDING_MODEL, JUDGE_MODEL = MODEL } = process.env;
   if (!BASE_URL || !API_KEY || !MODEL || !EMBEDDING_MODEL || !JUDGE_MODEL) throw new Error('Configure BASE_URL, API_KEY, MODEL e EMBEDDING_MODEL');
-  const provedor = provedorCompativel({ baseUrl: BASE_URL, apiKey: API_KEY, embeddingModel: EMBEDDING_MODEL, chatModel: MODEL });
-  const juiz = provedorCompativel({ baseUrl: BASE_URL, apiKey: API_KEY, embeddingModel: EMBEDDING_MODEL, chatModel: JUDGE_MODEL });
+  const modelosEfetivos = { embeddings: [], resposta: [], juiz: [] };
+  const registrar = tipo => (_categoria, modelo) => { if (modelo && !modelosEfetivos[tipo].includes(modelo)) modelosEfetivos[tipo].push(modelo); };
+  const provedor = provedorCompativel({ baseUrl: BASE_URL, apiKey: API_KEY, embeddingModel: EMBEDDING_MODEL, chatModel: MODEL, dimensoes: 1536, tempoLimiteMs: 120000, aoReceberModelo: (tipo, modelo) => registrar(tipo === 'chat' ? 'resposta' : 'embeddings')(tipo, modelo) });
+  const juiz = provedorCompativel({ baseUrl: BASE_URL, apiKey: API_KEY, embeddingModel: EMBEDDING_MODEL, chatModel: JUDGE_MODEL, tempoLimiteMs: 120000, aoReceberModelo: registrar('juiz') });
   const base = await artigos('base'); const trechos = [];
   for (const artigo of base) for (const [i, conteudo] of dividirTexto(artigo.texto, tamanho, sobreposicao).entries()) {
     trechos.push({ artigo_id: artigo.id, titulo: artigo.titulo, id: `${artigo.id}-${i}`, conteudo, vetor: await provedor.embeddings.gerar(conteudo) });
@@ -92,7 +94,7 @@ export async function executarAvaliacao({ tamanho, sobreposicao, topK, nome }) {
     if (valor !== 'SIM' && valor !== 'NAO' && valor !== 'NÃO') throw new Error('Resposta inválida do juiz');
     return valor === 'SIM';
   });
-  const relatorio = { data: new Date().toISOString(), nome, modelos: { resposta: MODEL, embeddings: EMBEDDING_MODEL, juiz: JUDGE_MODEL }, configuracao: { tamanho, sobreposicao, topK, limiar: 0.75 }, ...resultado };
+  const relatorio = { data: new Date().toISOString(), nome, modelos: { resposta: MODEL, embeddings: EMBEDDING_MODEL, juiz: JUDGE_MODEL, efetivos: modelosEfetivos }, configuracao: { tamanho, sobreposicao, topK, dimensoes: 1536, limiar: 0.75 }, ...resultado };
   await mkdir('avaliacao/relatorios', { recursive: true });
   await writeFile(`avaliacao/relatorios/${nome}.json`, JSON.stringify(relatorio, null, 2) + '\n', { flag: 'wx' });
   return relatorio;
