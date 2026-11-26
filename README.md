@@ -2,7 +2,7 @@
 
 > **Demonstração:** em breve
 
-> **Status: pronto para revisão.** Backend, chat, base fictícia (30 artigos) e script de avaliação estão na `main`. Falta rodar a avaliação com um provedor real e publicar as métricas (ver "Avaliação formal").
+> **Status: concluído.** Backend, chat, base fictícia (30 artigos) e script de avaliação estão na `main`, com CI no GitHub Actions. Falta rodar a avaliação com um provedor real e publicar as métricas (ver "Avaliação formal").
 
 ## Problema e solução
 
